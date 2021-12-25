@@ -1,6 +1,6 @@
 # disappearing_widget
 
-Disappearing Widget
+A widget to help you hide another widget with given time.
 
 ## Getting Started
 
