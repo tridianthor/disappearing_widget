@@ -1,14 +1,30 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:disappearing_widget/provider/timer_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class DisappearingWidgetRoot extends StatelessWidget {
+  final Widget child;
+  final int timeout;
+
+  const DisappearingWidgetRoot(this.child, this.timeout);
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(create: (context) => TimerProvider(timeout), child: DisappearingWidget(child: child, timeout: timeout,),);
+  }
+}
 
 class DisappearingWidget extends StatefulWidget {
   final Widget child;
+
   ///Timeout in second
   final int timeout;
 
   ///Widget to make the child disappear in given time
-  const DisappearingWidget({required Key key, required this.child, required this.timeout}) : super(key: key);
+  const DisappearingWidget({Key? key, required this.child, required this.timeout}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -17,56 +33,28 @@ class DisappearingWidget extends StatefulWidget {
 }
 
 class DisappearingWidgetState extends State<DisappearingWidget> {
-  late int _timerStart;
-  late Timer _inactivityTimer;
-  bool hidePlayButton = false;
+  late TimerProvider timerProvider;
 
   @override
   void initState() {
-    _timerStart = widget.timeout;
-
-    _startTimer();
+    WidgetsFlutterBinding.ensureInitialized();
+    Provider.of<TimerProvider>(context, listen: false).startTimer();
     super.initState();
-  }
-
-  _startTimer() {
-    const tick = Duration(seconds: 1);
-    _inactivityTimer = Timer.periodic(tick, (timer) {
-      if (_timerStart == 0) {
-        setState(() {
-          _timerStart = 3;
-          _inactivityTimer.cancel();
-          hidePlayButton = !hidePlayButton;
-        });
-      } else {
-        setState(() {
-          _timerStart--;
-        });
-      }
-    });
-  }
-
-  show() {
-    _inactivityTimer.cancel();
-    setState(() {
-      hidePlayButton = false;
-    });
-    if (!_inactivityTimer.isActive) {
-      _startTimer();
-    }
   }
 
   @override
   void dispose() {
-    _inactivityTimer.cancel();
+    Provider.of<TimerProvider>(context).dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
-      opacity: !hidePlayButton ? 1 : 0,
-      duration: Duration(milliseconds: 800),
+      opacity: !Provider
+          .of<TimerProvider>(context)
+          .hideElement ? 1 : 0,
+      duration: const Duration(milliseconds: 800),
       child: widget.child,
     );
   }

@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:disappearing_widget/disappearing_widget.dart';
+import 'package:disappearing_widget/provider/timer_provider.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => TimerProvider(3),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -13,7 +20,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  GlobalKey<DisappearingWidgetState> key = GlobalKey();
+  DisappearingWidgetRoot root = DisappearingWidgetRoot(
+      Container(
+        width: 100,
+        height: 100,
+        color: Colors.red,
+      ),
+      3);
 
   @override
   void initState() {
@@ -35,7 +48,8 @@ class _MyAppState extends State<MyApp> {
               alignment: Alignment.center,
               child: ElevatedButton(
                 onPressed: () {
-                  key.currentState!.show();
+                  /*timerProvider.show();*/
+                  Provider.of<TimerProvider>(context, listen: false).show();
                 },
                 child: const Text("Make appear"),
               ),
@@ -43,7 +57,6 @@ class _MyAppState extends State<MyApp> {
             Container(
               alignment: Alignment.center,
               child: DisappearingWidget(
-                key: key,
                 timeout: 3,
                 child: Container(
                   width: 100,
