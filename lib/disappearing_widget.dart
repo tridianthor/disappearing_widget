@@ -44,7 +44,7 @@ class DisappearingWidgetState extends State<DisappearingWidget> {
 
   @override
   void dispose() {
-    Provider.of<TimerProvider>(context).dispose();
+    Provider.of<TimerProvider>(context, listen: false).dispose();
     super.dispose();
   }
 
