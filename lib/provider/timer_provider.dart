@@ -4,45 +4,27 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 
 class TimerProvider extends ChangeNotifier{
-  late int _timerStart, _timer;
+  late int _timerStart;
   late Timer _inactivityTimer;
   bool hideElement = false;
 
   TimerProvider(_timerStart){
     this._timerStart = _timerStart;
-    _timer = _timerStart;
-  }
-
-  startTimer() {
-    log("timer started");
-    const tick = Duration(seconds: 1);
-    _inactivityTimer = Timer.periodic(tick, (timer) {
-      if (_timer == 0) {
-        _timer = _timerStart;
-        _inactivityTimer.cancel();
-        hideElement = !hideElement;
-        notifyListeners();
-      } else {
-        _timer--;
-      }
-    });
   }
 
   show(){
-    log("timer cancelled");
     hideElement = false;
-
-    if (!_inactivityTimer.isActive) {
-      startTimer();
-    }else{
-      _inactivityTimer.cancel();
-    }
     notifyListeners();
+
+    hide();
   }
 
-  @override
-  void dispose() {
-    _inactivityTimer.cancel();
-    super.dispose();
+  hide(){
+    Future.delayed(Duration(seconds: _timerStart), (){
+      hideElement = true;
+
+      notifyListeners();
+    });
   }
+
 }

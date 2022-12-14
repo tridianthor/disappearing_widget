@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:disappearing_widget/disappearing_widget.dart';
 import 'package:disappearing_widget/provider/timer_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -20,16 +20,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  DisappearingWidgetRoot root = DisappearingWidgetRoot(
-      Container(
-        width: 100,
-        height: 100,
-        color: Colors.red,
-      ),
-      3);
-
   @override
   void initState() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Provider.of<TimerProvider>(context, listen: false).hide();
+    });
+
     super.initState();
   }
 
@@ -57,7 +53,6 @@ class _MyAppState extends State<MyApp> {
             Container(
               alignment: Alignment.center,
               child: DisappearingWidget(
-                timeout: 3,
                 child: Container(
                   width: 100,
                   height: 100,
