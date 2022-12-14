@@ -30,12 +30,12 @@ class TimerProvider extends ChangeNotifier{
 
   show(){
     log("timer cancelled");
-
-    _inactivityTimer.cancel();
     hideElement = false;
 
     if (!_inactivityTimer.isActive) {
       startTimer();
+    }else{
+      _inactivityTimer.cancel();
     }
     notifyListeners();
   }
